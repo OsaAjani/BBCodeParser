@@ -270,6 +270,62 @@
 					}
 
 				}
+				else //Cas des balises auto-fermantes
+				{
+					//On forge le pattern qui va nous permettre de récupérer la balise
+					$pattern = '#(?<!\\?<!\\\)\[' . preg_quote($allowedTag->getName(), '#') . ' (.*)(?<!\\?<!\\\)\]#iUu';
+					preg_match_all($pattern, $string, $matches, PREG_SET_ORDER);
+
+					//On va faire le remplacement de chaque chaine
+					$offset = 0;
+					foreach ($matches as $key => $matche)
+					{
+						//On va récupérer la position du début de la chaine, sa taille et déterminer l'offset de la suivante
+						$pos = mb_strpos($string, $matche[0], $offset);
+
+						//On va analyser les attributs du tag pour garder seulement ceux valides
+
+						//On regarde avec des '"'
+						$pattern = '#([^ ]+)="([^"]+)"#iu';
+						$matches2 = [];
+						preg_match_all($pattern, $matche[1], $matches2, PREG_SET_ORDER);
+
+						//On va vérifier s'il s'agit d'un attribut autorisé, et on va reconstruire les attributs du tag selon cette nouvelle version
+						$newAttributs = [];
+						foreach ($matches2 as $key2 => $matche2)
+						{
+							if (in_array($matche2[1], $allowedTag->getAllowedAttributs()))
+							{
+								$newAttributs[] = $matche2[1] . '="' . $matche2[2] . '"';
+							}
+						}
+						
+						//On regerde sans les '"'
+						$pattern = '#([^ ]+)=([^" ]+)#iu';
+						$matches2 = [];
+						preg_match_all($pattern, $matche[1], $matches2, PREG_SET_ORDER);
+
+						//On va vérifier s'il s'agit d'un attribut autorisé, et on va reconstruire les attributs du tag selon cette nouvelle version
+						foreach ($matches2 as $key2 => $matche2)
+						{
+							if (in_array($matche2[1], $allowedTag->getAllowedAttributs()))
+							{
+								$newAttributs[] = $matche2[1] . '="' . $matche2[2] . '"';
+							}
+						}
+
+						$newTag = '<' . $allowedTag->getName() . ' ' . implode(' ', $newAttributs) . '/>';
+
+						//On va reforger la chaine globale
+						$stringFirstPart = mb_strcut($string, 0, $pos);
+						$stringLastPart = mb_strcut($string, $pos + mb_strlen($matche[0]));
+						$string = $stringFirstPart . $newTag . $stringLastPart;
+
+						//On recalcul l'offset
+						$offset = $pos + mb_strlen($newTag);
+					}
+
+				}
 			}
 			
 			return $string;
