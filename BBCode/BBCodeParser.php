@@ -117,7 +117,7 @@
 				if (!$allowedTag->getAutoClosing())
 				{
 					//On forge le pattern qui va nous permettre de récupérer la balise
-					$pattern = '#(?<!\\?<!\\\)\[' . preg_quote($allowedTag->getName(), '#') . ' (.*)(?<!\\?<!\\\)\](.*)(?<!\\?<!\\\)\[/' . preg_quote($allowedTag->getName(), '#') . '(?<!\\?<!\\\)\]#iUu';
+					$pattern = '#(?<!\\?<!\\\)\[' . preg_quote($allowedTag->getName(), '#') . '( ?)(.*)(?<!\\?<!\\\)\](.*)(?<!\\?<!\\\)\[/' . preg_quote($allowedTag->getName(), '#') . '(?<!\\?<!\\\)\]#iUu';
 					preg_match_all($pattern, $string, $matches, PREG_SET_ORDER);
 
 					//On va faire le remplacement de chaque chaine
@@ -132,7 +132,7 @@
 						//On regarde avec des '"'
 						$pattern = '#([^ ]+)="([^"]+)"#iu';
 						$matches2 = [];
-						preg_match_all($pattern, $matche[1], $matches2, PREG_SET_ORDER);
+						preg_match_all($pattern, $matche[2], $matches2, PREG_SET_ORDER);
 
 						//On va vérifier s'il s'agit d'un attribut autorisé, et on va reconstruire les attributs du tag selon cette nouvelle version
 						$newAttributs = [];
@@ -147,7 +147,7 @@
 						//On regerde sans les '"'
 						$pattern = '#([^ ]+)=([^" ]+)#iu';
 						$matches2 = [];
-						preg_match_all($pattern, $matche[1], $matches2, PREG_SET_ORDER);
+						preg_match_all($pattern, $matche[2], $matches2, PREG_SET_ORDER);
 
 						//On va vérifier s'il s'agit d'un attribut autorisé, et on va reconstruire les attributs du tag selon cette nouvelle version
 						foreach ($matches2 as $key2 => $matche2)
@@ -158,7 +158,7 @@
 							}
 						}
 
-						$newTag = '<' . $allowedTag->getName() . ' ' . implode(' ', $newAttributs) . '>' . $matche[2] . '</' . $allowedTag->getName() . '>';
+						$newTag = '<' . $allowedTag->getName() . ' ' . implode(' ', $newAttributs) . '>' . $matche[3] . '</' . $allowedTag->getName() . '>';
 
 						//On va reforger la chaine globale
 						$stringFirstPart = mb_strcut($string, 0, $pos);
@@ -173,7 +173,7 @@
 				else //Cas des balises auto-fermantes
 				{
 					//On forge le pattern qui va nous permettre de récupérer la balise
-					$pattern = '#(?<!\\?<!\\\)\[' . preg_quote($allowedTag->getName(), '#') . ' (.*)(?<!\\?<!\\\)\]#iUu';
+					$pattern = '#(?<!\\?<!\\\)\[' . preg_quote($allowedTag->getName(), '#') . '( ?)(.*)(?<!\\?<!\\\)\]#iUu';
 					preg_match_all($pattern, $string, $matches, PREG_SET_ORDER);
 
 					//On va faire le remplacement de chaque chaine
@@ -188,7 +188,7 @@
 						//On regarde avec des '"'
 						$pattern = '#([^ ]+)="([^"]+)"#iu';
 						$matches2 = [];
-						preg_match_all($pattern, $matche[1], $matches2, PREG_SET_ORDER);
+						preg_match_all($pattern, $matche[2], $matches2, PREG_SET_ORDER);
 
 						//On va vérifier s'il s'agit d'un attribut autorisé, et on va reconstruire les attributs du tag selon cette nouvelle version
 						$newAttributs = [];
@@ -203,7 +203,7 @@
 						//On regerde sans les '"'
 						$pattern = '#([^ ]+)=([^" ]+)#iu';
 						$matches2 = [];
-						preg_match_all($pattern, $matche[1], $matches2, PREG_SET_ORDER);
+						preg_match_all($pattern, $matche[2], $matches2, PREG_SET_ORDER);
 
 						//On va vérifier s'il s'agit d'un attribut autorisé, et on va reconstruire les attributs du tag selon cette nouvelle version
 						foreach ($matches2 as $key2 => $matche2)
