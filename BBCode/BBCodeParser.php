@@ -161,8 +161,8 @@
 						$newTag = '<' . $allowedTag->getName() . ' ' . implode(' ', $newAttributs) . '>' . $matche[3] . '</' . $allowedTag->getName() . '>';
 
 						//On va reforger la chaine globale
-						$stringFirstPart = mb_strcut($string, 0, $pos);
-						$stringLastPart = mb_strcut($string, $pos + mb_strlen($matche[0]));
+						$stringFirstPart = mb_substr($string, 0, $pos);
+						$stringLastPart = mb_substr($string, $pos + mb_strlen($matche[0]));
 						$string = $stringFirstPart . $newTag . $stringLastPart;
 
 						//On recalcul l'offset
@@ -217,8 +217,8 @@
 						$newTag = '<' . $allowedTag->getName() . ' ' . implode(' ', $newAttributs) . '/>';
 
 						//On va reforger la chaine globale
-						$stringFirstPart = mb_strcut($string, 0, $pos);
-						$stringLastPart = mb_strcut($string, $pos + mb_strlen($matche[0]));
+						$stringFirstPart = mb_substr($string, 0, $pos);
+						$stringLastPart = mb_substr($string, $pos + mb_strlen($matche[0]));
 						$string = $stringFirstPart . $newTag . $stringLastPart;
 
 						//On recalcul l'offset
